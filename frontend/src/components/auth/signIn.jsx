@@ -1,4 +1,30 @@
+import axios from "axios";
+import { useState } from "react";
+import useAuthStore from "../../zustand/authStore";
+
 export default function SignIn() {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const { auth } = useAuthStore();
+
+  const handleSignIn = async (e) => {
+    e.preventDefault();
+    try {
+      const response = await axios.post(
+        "http://localhost:3000/api/v1/user/login",
+        {
+          email,
+          password,
+        },
+        { withCredentials: true }
+      );
+      console.log(response.data.user);
+      auth(response.data.user);
+    } catch (error) {
+      console.error("Error during sign in:", error);
+    }
+  };
+
   return (
     <>
       <div className="flex min-h-full flex-col justify-center px-6 py-12 lg:px-8">
@@ -9,7 +35,7 @@ export default function SignIn() {
         </div>
 
         <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
-          <form className="space-y-6">
+          <form className="space-y-6" onSubmit={handleSignIn}>
             <div>
               <label
                 htmlFor="email"
@@ -22,6 +48,9 @@ export default function SignIn() {
                   id="email"
                   name="email"
                   type="email"
+                  onChange={(e) => {
+                    setEmail(e.target.value);
+                  }}
                   required
                   autoComplete="email"
                   className="block w-full rounded-md bg-white/5 px-3 py-1.5 text-base text-white outline-1 -outline-offset-1 outline-white/10 placeholder:text-gray-500 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-500 sm:text-sm/6"
@@ -50,6 +79,9 @@ export default function SignIn() {
                 <input
                   id="password"
                   name="password"
+                  onChange={(e) => {
+                    setPassword(e.target.value);
+                  }}
                   type="password"
                   required
                   autoComplete="current-password"

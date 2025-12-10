@@ -1,22 +1,17 @@
-import { Payment } from '../model/User.model';
+import { Payment } from '../model/User.model.js';
 
 const addInitialMoney = async (email, amount) => {
   try {
-    const paymentAccount = await Payment.findOne({ email });
-    if (paymentAccount) {
-      paymentAccount.balance = (
-        parseFloat(paymentAccount.balance) + parseFloat(amount)
-      ).toString();
-      await paymentAccount.save();
-    } else {
-      const newPaymentAccount = new Payment({
-        email,
-        balance: amount.toString(),
-      });
-      await newPaymentAccount.save();
+    const newPaymentAccount = Payment.create({
+      email,
+      balance: amount,
+    })
+    if(!newPaymentAccount){
+      console.log("Payment account not created");
+      return;
     }
-    console.log(`Initial money of ${amount} added to ${email}`);
-    
+    console.log("Initial money added successfully");
+
   } catch (error) {
     console.log("Error adding initial money:", error);
   }

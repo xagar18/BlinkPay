@@ -1,26 +1,24 @@
-import jwt from 'jsonwebtoken';
+import jwt from "jsonwebtoken";
 
 export const isLoggedIn = async (req, res, next) => {
-  console.log('isLoggedIn called');
   try {
-    const token = req.cookies.test;
-    console.log('token', token);
+    const token = req.cookies.token;
+
     if (!token) {
-      console.log('no token found');
       return res.status(401).json({
-        message: 'Unauthorized',
+        success: false,
+        message: "Unauthorized - No token provided",
       });
     }
-    const decoded = jwt.verify(token, process.env.JWT_SECRET);
-    console.log('decoded', decoded);
-    req.user = decoded;
-    console.log('req.user', req.user);
+
+    const tokenData = jwt.verify(token, process.env.JWT_SECRET);
+    req.user = tokenData;
+    console.log("req.user", req.user);
     next();
   } catch (error) {
     return res.status(401).json({
-      message: 'Unauthorized',
+      success: false,
+      message: "Unauthorized - Invalid or expired token",
     });
   }
 };
-
-// 9003143125

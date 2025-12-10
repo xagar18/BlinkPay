@@ -1,4 +1,28 @@
+import axios from "axios";
+import { useState } from "react";
+import useAuthStore from "../../zustand/authStore";
+
 export default function SignUp() {
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const { auth } = useAuthStore();
+
+  const handleSignUp = async (e) => {
+    e.preventDefault();
+    try {
+      const response = await axios.post(
+        "http://localhost:3000/api/v1/user/register",
+        { name, email, password },
+        { withCredentials: true }
+      );
+      console.log(response.data.user);
+      auth(response.data.user);
+    } catch (error) {
+      console.error("Error during sign up:", error);
+    }
+  };
+
   return (
     <>
       <div className="flex min-h-full flex-col justify-center px-6 py-12 lg:px-8">
@@ -9,7 +33,7 @@ export default function SignUp() {
         </div>
 
         <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
-          <form className="space-y-6">
+          <form className="space-y-6" onSubmit={handleSignUp}>
             <div>
               <label
                 htmlFor="name"
@@ -19,6 +43,9 @@ export default function SignUp() {
               </label>
               <div className="mt-2">
                 <input
+                  onChange={(e) => {
+                    setName(e.target.value);
+                  }}
                   id="name"
                   name="name"
                   type="name"
@@ -40,6 +67,9 @@ export default function SignUp() {
                 <input
                   id="email"
                   name="email"
+                  onChange={(e) => {
+                    setEmail(e.target.value);
+                  }}
                   type="email"
                   required
                   autoComplete="email"
@@ -68,6 +98,9 @@ export default function SignUp() {
               <div className="mt-2">
                 <input
                   id="password"
+                  onChange={(e) => {
+                    setPassword(e.target.value);
+                  }}
                   name="password"
                   type="password"
                   required
