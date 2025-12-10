@@ -4,6 +4,7 @@ import "./App.css";
 import SignIn from "./components/auth/signIn";
 import SignUp from "./components/auth/signUp";
 import Home from "./pages/Home";
+import TransactionHistory from "./pages/TransactionHistory";
 import useAuthStore from "./zustand/authStore";
 
 function App() {
@@ -30,6 +31,7 @@ function App() {
           path="/"
           element={isAuthenticated ? <Home /> : <Navigate to="/signin" />}
         />
+        <Route path="/transactions" element={<TransactionHistory />} />
       </Routes>
     </>
   );

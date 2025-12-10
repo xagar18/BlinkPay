@@ -1,12 +1,12 @@
-import { Payment } from "../model/User.model.js";
+import User, { Payment } from "../model/User.model.js";
 
 const getPaymentAccount = async (req, res) => {
   try {
     const { email } = req.params;
 
-    const paymentAccount = await Payment.findOne({ email });
+    const payData = await Payment.findOne({ email });
 
-    if (!paymentAccount) {
+    if (!payData) {
       return res.status(404).json({
         message: "Payment account not found",
       });
@@ -14,7 +14,7 @@ const getPaymentAccount = async (req, res) => {
 
     res.status(200).json({
       message: "Payment account fetched successfully",
-      paymentAccount,
+      payData,
     });
   } catch (error) {
     res.status(500).json({
@@ -68,22 +68,29 @@ const moneyHandler = async (req, res) => {
 };
 
 const getOtherUserPaymentAccount = async (req, res) => {
+  console.log("entered get other users");
+
   try {
     const { email } = req.params;
 
-    const paymentAccount = await Payment.find({ $ne: { email: email } });
+     const users = await User.find({
+       email: { $ne: email },
+     }).select("name email");
 
-    if (!paymentAccount) {
-      return res.status(404).json({
-        message: "Payment account not found",
-      });
-    }
+     if (!users || users.length === 0) {
+       // Fixed variable name
+       return res.status(404).json({
+         message: "No other users found",
+       });
+     }
 
     res.status(200).json({
       message: "Payment account fetched successfully",
-      paymentAccount,
+      users,
     });
   } catch (error) {
+    console.log("get other user error");
+
     res.status(500).json({
       message: "Internal server error",
     });
