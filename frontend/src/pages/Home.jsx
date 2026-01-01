@@ -13,7 +13,7 @@ const Home = () => {
 
   // get payment account of other user
   const fetchUsers = async () => {
-    const otherUserDeatils = await getOtherUsers(userData.email);
+    const otherUserDeatils = await getOtherUsers(userData?.email);
     setUsers(otherUserDeatils);
   };
 
@@ -22,7 +22,7 @@ const Home = () => {
   }, [userData.email]);
 
   const fetchBalance = async () => {
-    const balanceData = await myPayDetails(userData.email);
+    const balanceData = await myPayDetails(userData?.email);
     console.log("balance fetched:", balanceData);
     setBalance(Number(balanceData) || 0);
   };
@@ -30,7 +30,7 @@ const Home = () => {
     fetchBalance();
   }, []);
 
-  const filteredUsers = users.filter(
+  const filteredUsers = users?.filter(
     (user) =>
       user.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
       user.email.toLowerCase().includes(searchTerm.toLowerCase())
